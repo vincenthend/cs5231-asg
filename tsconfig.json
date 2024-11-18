@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",           // Set a recent target for modern features, adjust as needed
+      "module": "CommonJS",         // Use CommonJS for Node.js compatibility
+      "strict": true,               // Enable strict type checking for safer code
+      "esModuleInterop": true,      // Allows importing CommonJS modules like `import express from 'express'`
+      "skipLibCheck": true,         // Skip checking of declaration files to speed up builds
+      "forceConsistentCasingInFileNames": true, // Enforce consistent file name casing
+      "outDir": "./dist"            // Optional: Set an output directory for compiled files if needed
+    },
+    "include": ["src/**/*.ts"],      // Adjust to match your source code structure
+    "exclude": ["node_modules"]      // Exclude `node_modules` to avoid unnecessary compilation
+  }
+  
