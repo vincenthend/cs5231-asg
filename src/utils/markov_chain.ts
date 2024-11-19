@@ -3,10 +3,13 @@ import { ModelBuilder, TraceModel } from "../types";
 export type MarkovChainTable = Map<string, Map<string, number>>;
 
 export class MarkovChainBuilder<T> extends ModelBuilder<T> {
-  private transitionCounts: MarkovChainTable = new Map<string, Map<string, number>>();
+  private transitionCounts: MarkovChainTable = new Map<
+    string,
+    Map<string, number>
+  >();
 
   constructor(private readonly fn: (obj: T) => string = (obj) => String(obj)) {
-    super()
+    super();
   }
 
   async train(source: AsyncIterable<T>): Promise<void> {
@@ -38,8 +41,26 @@ export class MarkovChainBuilder<T> extends ModelBuilder<T> {
         0
       );
       for (const [nextState, count] of transitions.entries()) {
-        this.model[`${currentState}->${nextState}`] = count / totalTransitions;
+        this.model[this.getTransition([currentState, nextState])] =
+          count / totalTransitions;
       }
     }
+  }
+
+  predict(data: T[]): number {
+    const buffer: T[] = [];
+    let regularity = 1;
+
+    for (const x of data) {
+      buffer.push(x);
+      if (buffer.length === 2) {
+        const probability =
+          this.model[this.getTransition(buffer.map((x) => this.fn(x)))];
+        regularity += probability ? Math.log(probability) : 0;
+        buffer.shift();
+      }
+    }
+
+    return regularity;
   }
 }

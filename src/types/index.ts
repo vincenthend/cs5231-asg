@@ -9,8 +9,15 @@ export type TraceModel = Record<string, number>;
 export abstract class ModelBuilder<T> {
   protected model: TraceModel = {};
 
-  abstract train(iter: AsyncIterable<T>): Promise<void>;
   getModel(): TraceModel {
     return this.model;
   }
+
+  protected getTransition(buffer: string[]) {
+    return buffer.join("->");
+  }
+
+  abstract train(iter: AsyncIterable<T>): Promise<void>;
+
+  abstract predict(data: T[]): number;
 }
