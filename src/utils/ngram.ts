@@ -43,18 +43,20 @@ export class NGramBuilder<T> extends ModelBuilder<T> {
 
   predict(data: T[]): number {
     const buffer: T[] = [];
-    let regularity = 1;
-
-    const model = this.getModel();
+    let abnormality = 0;
+    const smoothing = 0.0001; // laplace smoothing to prevent P(0)
 
     for (const x of data) {
       buffer.push(x);
       if (buffer.length === this.n) {
-        regularity *= model[this.getTransition(buffer.map((x) => this.fn(x)))] ?? 0;
+        const probability =
+          this.model[this.getTransition(buffer.map((x) => this.fn(x)))] ?? 0;
+
+        abnormality += Math.log(probability + smoothing);
         buffer.shift();
       }
     }
 
-    return regularity;
+    return abnormality;
   }
 }

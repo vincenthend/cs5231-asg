@@ -9,17 +9,14 @@ export class ExecutionScanner {
     const regularityScore = [];
 
     let logs: SyscallData[] = [];
+    // sliding window
     for await (const logEntry of reader.getNextStatement()) {
       logs.push(logEntry);
 
       if (logs.length === this.n) {
         regularityScore.push(model.predict(logs));
-        logs = [];
+        logs.shift();
       }
-    }
-
-    if (logs.length > 0) {
-      regularityScore.push(model.predict(logs));
     }
 
     return regularityScore;

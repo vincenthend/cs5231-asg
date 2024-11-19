@@ -6,6 +6,7 @@ import { ExecutionScanner } from "./utils/scanner";
 import { NGramBuilder } from "./utils/ngram";
 
 const DATASETS = [path.resolve(__dirname, "../log/log.txt")];
+const TEST_LOG = path.resolve(__dirname, "../test_data/malicious_log.txt");
 
 const N_GRAM = 3;
 const MODEL = new NGramBuilder<SyscallData>(
@@ -25,10 +26,7 @@ async function main() {
   }
 
   const detector = new ExecutionScanner(5);
-  const score = await detector.predictScore(
-    MODEL,
-    path.resolve(__dirname, "../test_data/malicious_log.txt")
-  );
+  const score = await detector.predictScore(MODEL, TEST_LOG);
 
   console.log(MODEL.getModel());
   console.log("\n\n\n\n");

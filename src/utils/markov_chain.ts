@@ -49,18 +49,19 @@ export class MarkovChainBuilder<T> extends ModelBuilder<T> {
 
   predict(data: T[]): number {
     const buffer: T[] = [];
-    let regularity = 1;
+    const smoothing = 0.0001; // laplace smoothing to prevent P(0)
+    let score = 0;
 
     for (const x of data) {
       buffer.push(x);
       if (buffer.length === 2) {
         const probability =
-          this.model[this.getTransition(buffer.map((x) => this.fn(x)))];
-        regularity += probability ? Math.log(probability) : 0;
+          this.model[this.getTransition(buffer.map((x) => this.fn(x)))] ?? 0;
+        score += Math.log(probability + smoothing);
         buffer.shift();
       }
     }
 
-    return regularity;
+    return score;
   }
 }
